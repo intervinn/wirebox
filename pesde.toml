@@ -1,5 +1,5 @@
 name = "intervinn/wirebox"
-version = "0.1.0"
+version = "0.1.1"
 description = "Constructor-based Dependency Injection"
 authors = ["intervinn"]
 repository = "https://github.com/intervinn/wirebox"
@@ -17,9 +17,6 @@ lib = "lib/init.luau"
 
 [indices]
 default = "https://github.com/pesde-pkg/index"
-
-[dev_dependencies]
-scripts = { name = "pesde/scripts_rojo", version = "^0.2.0", target = "lune" }
 
 [engines]
 pesde = "^0.7.0"
