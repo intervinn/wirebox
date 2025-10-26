@@ -63,6 +63,16 @@ local app = provider:Get(App.new)
 if not app then return end
 app:hello()
 ```
+Service Collection also has configurable options with default values:
+```luau
+export type CollectionOptions = {
+    debugMessages: boolean, -- true
+    requireServiceNames: boolean, -- false
+    panicOnCyclicDependencies: boolean -- true
+}
+
+collection.Options.debugMessages = false
+````
 
 ## Contributing
 There are many things that could be improved, so the contributions are heavily welcomed.
