@@ -11,14 +11,14 @@ The services can have only two lifetimes - singleton and transient. The singleto
 
 With this library you can automate the initialization order and focus on building more complicated and structured games and applications.
 
-# Install
+## Install
 With pesde:
 ```bash
 $ pesde add intervinn/wirebox
 $ pesde install
 ```
 
-# Usage
+## Usage
 See `/examples` for more.
 
 ```luau
@@ -64,8 +64,8 @@ if not app then return end
 app:hello()
 ```
 
-# Contributing
+## Contributing
 There are many things that could be improved, so the contributions are heavily welcomed.
 
-# License
+## License
 This project is licensed under the MIT license.
