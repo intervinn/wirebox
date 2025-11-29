@@ -11,6 +11,9 @@ includes = [
     "lib/**/*.luau"
 ]
 
+[scripts]
+test = "./test/_run.luau"
+
 [target]
 environment = "luau"
 lib = "lib/init.luau"
@@ -21,3 +24,6 @@ default = "https://github.com/pesde-pkg/index"
 [engines]
 pesde = "^0.7.0"
 lune = "^0.10.2"
+
+[dev_dependencies]
+frktest = { name = "itsfrank/frktest", version = "^0.0.4", target = "luau" }

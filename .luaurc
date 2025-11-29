@@ -1,3 +1,8 @@
 {
   "languageMode": "strict",
+  "aliases": {
+    "pkg": "./luau_packages",
+    "test": "./test",
+    "lune": "~/.lune/.typedefs/0.10.4/"
+  }
 }

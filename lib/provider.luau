@@ -1,14 +1,22 @@
+local Table = require("./table")
+local Collection = require("./collection")
+
 local Provider = {}
 Provider.__index = Provider
 
+type Constructor = (...any) -> any
+
 export type Service = {
+    name: string,
     lifetime: "transient" | "singleton",
-    constructor: (...any) -> any,
-    factory: () -> any,
-    instance: any?
+    constructor: Constructor, -- original constructor
+    factory: () -> any, -- provider-specific factory
+    instance: any? -- if singleton
 }
 
-export type Provider = typeof(setmetatable({}, Provider))
+export type Provider = typeof(setmetatable({} :: {
+    Services: {Service}
+}, Provider))
 
 function Provider.new()
     return setmetatable({
@@ -16,23 +24,79 @@ function Provider.new()
     }, Provider)
 end
 
-function Provider:Get<T>(constructor: (...any) -> T): T?
-    for _, v: Service in self.Services do
-        if v.constructor == constructor then
-            return v.factory()
-        end
-    end
-    return nil
-end
-
-function Provider:GetEntry<T>(constructor: (...any) -> T): Service?
-    for _, v: Service in self.Services do
-        if v.constructor == constructor then
-            return v
-        end
+function buildService(self: Provider, collection: Collection.Collection, service: Collection.ServiceEntry): Service
+    local exists = Table.First(self.Services, function(v) return v.constructor == service.constructor end)
+    if exists then
+        return exists
     end
 
-    return nil
+    local deps = Table.Map(service.dependencies, function(v)
+        return buildService(self, collection, v).factory()
+    end)
+    
+
+
+    local result: Service = {
+        name = service.name or "<unnamed>",
+        lifetime = service.lifetime,
+        constructor = service.constructor,
+        factory = function()
+            return service.constructor(table.unpack(deps))
+        end,
+    }
+
+    if result.lifetime == "singleton" then
+        result.instance = result.factory()
+        result.factory = function()
+            return result.instance
+        end
+    end
+
+    if result.name == "<_wirebox.provider>" then
+        result.instance = self
+        result.factory = function()
+            return self
+        end
+    end
+
+    self:AddService(result)
+
+    return result
 end
+
+function Provider.FromCollection(collection: Collection.Collection)
+    local self = Provider.new()
+
+    collection:ResolveEntries()
+    for _, service: Collection.ServiceEntry in collection:GetServices() do
+        buildService(self, collection, service)
+    end
+
+    return self
+end
+
+function Provider:GetService(key: string | Constructor): Service
+    if type(key) == "string" then
+        return (Table.First(self.Services, function(v) return v.name == key end) :: Service).factory()
+    elseif type(key) == "function" then
+        return (Table.First(self.Services, function(v) return v.constructor == key end) :: Service).factory()
+    else
+        error(`Unknown GetService key: {key}`)
+    end
+end
+
+function Provider:AddService(service: Service)
+    if Table.First(self.Services :: {Service}, function(v) return v.constructor == service.constructor end) then
+        return
+    end
+
+    table.insert(self.Services, service)
+end
+
+-- Since Luau is diverse on naming conventions, create methods in other cases
+Provider.add_service = Provider.AddService
+Provider.addService = Provider.AddService
+Provider.from_collection = Provider.FromCollection
+Provider.fromCollection = Provider.FromCollection
 
 return Provider

@@ -68,4 +68,10 @@ function Table.Assign<A, B>(a: A, b: B) : A & B
     return b :: A & B
 end
 
+function Table.ForEach<T>(t : {T}, f: (i: number, v: T) -> ()): ()
+    for i, v in t do
+        f(i, v)
+    end
+end
+
 return Table

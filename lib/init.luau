@@ -1,12 +1,13 @@
+local Builder = require("@self/builder")
 local Collection = require("@self/collection")
-local Injector = require("@self/injector")
+local provide = require("@self/provide")
 local Provider = require("@self/provider")
 local Table = require("@self/table")
 
-return table.freeze({
+return {
+    Builder = Builder,
     Collection = Collection,
-    createInjector = Injector.createInjector,
-    createInjectorExtendBuilder = Injector.createInjectorExtendBuilder,
+    provide = provide,
     Provider = Provider,
     Table = Table
-})
+}
