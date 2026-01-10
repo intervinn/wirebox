@@ -1,5 +1,5 @@
 name = "intervinn/wirebox"
-version = "0.1.1"
+version = "0.1.2"
 description = "Constructor-based Dependency Injection"
 authors = ["intervinn"]
 repository = "https://github.com/intervinn/wirebox"
