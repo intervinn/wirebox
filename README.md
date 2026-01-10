@@ -15,7 +15,7 @@ $ pesde install
 ```
 
 ## Usage
-See `/examples` for more.
+The `/test` directory also covers each feature.
 
 ```luau
 local Wirebox = require("../lib")
