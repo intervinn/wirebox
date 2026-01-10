@@ -1,4 +1,3 @@
-local Table = require("./table")
 local Collection = require("./collection")
 
 local Builder = {}
@@ -13,7 +12,8 @@ function Builder.new(constructor: Collection.Constructor)
         Result = {
             name = "<unnamed>",
             dependencies = {},
-            constructor = constructor
+            constructor = constructor,
+            meta = {}
         }
     }, Builder)
 end
@@ -50,6 +50,11 @@ function Builder:WithProvider()
     table.insert(self.Result.dependencies, {
         name = "<_wirebox.provider>"
     })
+    return self
+end
+
+function Builder:WithMeta(meta: any)
+    self.Result.meta = meta
     return self
 end
 

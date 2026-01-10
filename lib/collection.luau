@@ -4,7 +4,8 @@ export type ServiceEntry = {
     lifetime: "transient" | "singleton",
     constructor: (...any) -> any,
     dependencies: {ServiceEntry},
-    name: string?
+    name: string?,
+    meta: {}
 }
 
 export type Constructor = (...any) -> any
@@ -13,7 +14,8 @@ export type PartialEntry = {
     lifetime: "transient" | "singleton",
     constructor: Constructor,
     dependencies: {PartialDependency},
-    name: string?
+    name: string?,
+    meta: {}
 }
 
 export type PartialDependency = {
@@ -103,7 +105,8 @@ function Collection:ResolveEntry(entry: PartialEntry): ServiceEntry?
         lifetime = entry.lifetime,
         constructor = entry.constructor,
         dependencies = dependencies :: {ServiceEntry},
-        name = entry.name
+        name = entry.name,
+        meta = entry.meta
     }
 
     table.insert(self.Entries, result)

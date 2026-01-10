@@ -11,7 +11,8 @@ export type Service = {
     lifetime: "transient" | "singleton",
     constructor: Constructor, -- original constructor
     factory: () -> any, -- provider-specific factory
-    instance: any? -- if singleton
+    instance: any?, -- if singleton
+    meta: {}
 }
 
 export type Provider = typeof(setmetatable({} :: {
@@ -33,12 +34,11 @@ function buildService(self: Provider, collection: Collection.Collection, service
     local deps = Table.Map(service.dependencies, function(v)
         return buildService(self, collection, v).factory()
     end)
-    
-
 
     local result: Service = {
         name = service.name or "<unnamed>",
         lifetime = service.lifetime,
+        meta = service.meta,
         constructor = service.constructor,
         factory = function()
             return service.constructor(table.unpack(deps))
