@@ -28,12 +28,21 @@ function Builder:Singleton(): Builder
     return self
 end
 
-function Builder:With(dependency: Collection.Constructor): Builder
-    local entry = {
-        constructor = dependency
-    }
-    table.insert(self.Result.dependencies, entry)
-    return self
+function Builder:With(dependency: Collection.Constructor | string): Builder
+    if type(dependency) == "function" then
+        local entry = {
+            constructor = dependency
+        }
+        table.insert(self.Result.dependencies, entry)
+        return self
+    elseif type(dependency) == "string" then
+        local entry = {
+            name = dependency
+        }
+        table.insert(self.Result.dependencies, entry)
+        return self
+    end
+    error(`Unknown type: {typeof(dependency)}, required function or string`)
 end
 
 function Builder:Collection(collection: Collection.Collection): Builder

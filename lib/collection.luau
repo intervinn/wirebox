@@ -90,15 +90,19 @@ end
     Checks for possible cyclic dependencies (TODO)
 ]]
 function Collection:ResolveEntry(entry: PartialEntry): ServiceEntry?
-    local exist = Table.First(self.Entries, function(v) return v.constructor == entry.constructor end)
+    local exist = Table.First(self.Entries, function(v) return v.constructor == entry.constructor or v.name == entry.name end)
     if exist then return exist end
 
     local dependencies: {ServiceEntry} = {}
 
     if entry.dependencies then
-        dependencies = Table.Map(entry.dependencies, function(v)
-            return self:ResolveEntry(v) :: any
-        end) 
+        for _, prt in entry.dependencies do
+            for _, ent in self.Partials do
+                if prt.name == ent.name or prt.constructor == ent.constructor then
+                    table.insert(dependencies, self:ResolveEntry(ent))
+                end
+            end
+        end
     end
 
     local result: ServiceEntry = {

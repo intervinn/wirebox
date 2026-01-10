@@ -52,13 +52,6 @@ function buildService(self: Provider, collection: Collection.Collection, service
         end
     end
 
-    if result.name == "<_wirebox.provider>" then
-        result.instance = self
-        result.factory = function()
-            return self
-        end
-    end
-
     self:AddService(result)
 
     return result
@@ -66,6 +59,12 @@ end
 
 function Provider.FromCollection(collection: Collection.Collection)
     local self = Provider.new()
+
+    collection:AddEntry({
+        name = "<_wirebox.provider>",
+        constructor = function() return self end,
+        lifetime = "singleton"
+    })
 
     collection:ResolveEntries()
     for _, service: Collection.ServiceEntry in collection:GetServices() do

@@ -3,6 +3,11 @@
 
 The Luau Dependency Injection container based on constructors.
 
+## Features
+* Designed to work with typical modular roblox codebases
+* Extensible and simple, inspired by .NET standard DI
+* 
+
 ## Install
 With pesde:
 ```bash
@@ -14,51 +19,44 @@ $ pesde install
 See `/examples` for more.
 
 ```luau
-local wirebox = require("wirebox")
+local Wirebox = require("../lib")
+local Provider = Wirebox.Provider
+local Collection = Wirebox.Collection
 
-local collection = wirebox.Collection.new()
-local inject = wirebox.createInjector(collection)
+local c = Collection.new()
+local provide = Wirebox.provide(c)
 
 local Logger = {}
 Logger.__index = Logger
-
 function Logger.new()
     return setmetatable({}, Logger)
 end
-
 function Logger:log(msg)
     print(msg)
 end
 
-inject(Logger.new)
-    :asTransient()
-
 local App = {}
 App.__index = App
-
 function App.new(logger)
     return setmetatable({
-        logger = logger
+        Logger = logger
     }, App)
 end
-
-function App:hello()
-    self.logger:log("world")
+function App:start()
+    self.Logger:log("hello world")
 end
 
-inject(App.new)
-    :with(Logger.new)
-    :asSingleton()
 
-local provider = collection:BuildProvider()
-local app = provider:Get(App.new)
-if not app then return end
-app:hello()
+provide(Logger.new):Singleton():Name("Logger")
+provide(App.new):With(Logger.new):Singleton():Name("App")
+
+local p = Provider.FromCollection(c)
+local app = p:GetService(App.new)
+app:start()
 ```
 
 ## Contributing
-Contributions are heavily welcomed! There are no contributions guide currently. If you have an idea to
-improve the project, open the issue before working on a PR.
+Contributions are heavily welcomed! There are no contributions guide currently. If you have an idea to improve the project, open the issue before working on PR.
 
 ## License
 This project is licensed under the MIT license.
