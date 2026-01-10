@@ -5,8 +5,7 @@ The Luau Dependency Injection container based on constructors.
 
 ## Features
 * Designed to work with typical modular roblox codebases
-* Extensible and simple, inspired by .NET standard DI
-* 
+* Extensible and simple, inspired by .NET standard DI 
 
 ## Install
 With pesde:
